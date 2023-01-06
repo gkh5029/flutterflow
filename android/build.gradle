@@ -1,6 +1,3 @@
-group 'com.onfido.sdk.flutter'
-version '1.0-SNAPSHOT'
-
 buildscript {
     ext.kotlin_version = '1.6.10'
     repositories {
@@ -9,43 +6,29 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:4.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.4'  // Google Services plugin
+        
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
     }
 }
 
-rootProject.allprojects {
+allprojects {
     repositories {
         google()
         mavenCentral()
     }
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-
-android {
-    compileSdkVersion 32
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-
-    defaultConfig {
-        minSdkVersion 21
-    }
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
 }
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.onfido.sdk.capture:onfido-capture-sdk:14.0.0"
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
